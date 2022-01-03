@@ -2,7 +2,8 @@ import { Fragment, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { uiActions } from "./store/ui-slice";
-import { sendCartData } from "./store/cart-slice";
+// import { sendCartData } from "./store/cart-slice";
+import { sendCartData, fetchCartData } from "./store/cart-actions";
 
 import Cart from "./components/Cart/Cart";
 import Layout from "./components/Layout/Layout";
@@ -17,13 +18,20 @@ function App() {
   const cart = useSelector((state) => state.cart);
   const notification = useSelector((state) => state.ui.notification);
 
+
+  useEffect(() => {
+    dispatch(fetchCartData())
+  }, [dispatch]);
+
   useEffect(() => {
       if (isInitial) {
         isInitial = false;
         return;
       }
 
-      dispatch(sendCartData(cart));
+      if (cart.changed) {
+        dispatch(sendCartData(cart));
+      }
     // const sendCartData = async () => {
     //   dispatch(
     //     uiActions.showNotification({
